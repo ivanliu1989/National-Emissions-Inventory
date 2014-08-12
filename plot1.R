@@ -26,9 +26,13 @@ plot1 <- function(){
     # Sum PM2.5 value by year
     NEI.plot1 <- ddply(NEI, .(year),summarize, totalbyyear=sum(Emissions))
     attach(NEI.plot1)
+    
+    # Allocate color to different years
     library(RColorBrewer)
     cols <- brewer.pal(4,"Accent")
     pal <-colorRampPalette(cols)
+    
+    #generate and output bar chart
     png("plot1.png", height=480,width=480)
     par(ps=12, bg="transparent",bty="l",las=1,cex=1, mar = c(3, 4, 3.5, 5))    
     barplot(totalbyyear,year, main="Total PM2.5 Emissions for 1999, 2002, 2005 and 2008", 
