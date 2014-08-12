@@ -15,25 +15,29 @@ plot4 <- function(){
     NEI <- readRDS(nei.file.list[2])
     SCC <- readRDS(nei.file.list[1])
     
-    # Merge datasets
-    NEI.all <- merge(NEI,SCC[,c(1,3)], by="SCC",all=F)
-    # Subset NEI dataset
-    a <- "Coal"
-    b <- "combustion"
-    index <- grepl(a,SCC$Short.Name, fix=T)
-    index.2 <- grepl(b, SCC$Short.Name, fix=T)
-    SCC.index <- SCC[index,]
+    # Subset SCC dataset
+    criteria.1 <- "Coal"
+    criteria.2 <- "Combustion"
+    index <- grepl(criteria.1,SCC$Short.Name, fix=T)
+    index.2 <- grepl(criteria.2, SCC$Short.Name, fix=T)
+    SCC.index <- SCC[index & index.2,]
     
     # Across the United States, how have emissions from coal combustion-related sources changed from 1999–2008?
     library(plyr)
     
+    # Subset NEI datasets
+    NEI.index <- SCC.index$SCC
+    NEI.plot4 <- NEI[which(NEI$SCC %in% NEI.index),]
+    
     # Sum PM2.5 value by year
-    NEI.plot4 <- ddply(NEI.Maryland, .(year,type),summarize, totalbyyear=sum(Emissions))
+    NEI.plot4 <- ddply(NEI.plot4, .(year),summarize, totalbyyear=sum(Emissions))
     
     #generate and output bar chart 
     library(ggplot2)
     png("plot4.png", height=480,width=480)
     g <- ggplot(NEI.plot4, aes(year, totalbyyear))
-    
+    g + geom_line() + labs(x="Year") + labs(y="PM2.5 Emissions") + 
+        geom_smooth(method="lm", size=1.5, linetype=3,se=F) +
+        labs(title=paste("Coal-related PM2.5 Emissions in US","during 1999 and 2008",sep="\n"))
     dev.off()
 }
