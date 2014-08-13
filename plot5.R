@@ -18,9 +18,9 @@ plot5 <- function(){
     # Subset SCC dataset
     criteria.1 <- "Motor"
     criteria.2 <- "Vehicle"
-    index <- grepl(criteria.1,SCC$Short.Name, fix=T)
-    index.2 <- grepl(criteria.2, SCC$Short.Name, fix=T)
-    SCC.subset <- subset(x=SCC,subset=(index & index.2),select=c(1,3))
+    index <- grepl(criteria.1,SCC$Short.Name, fix=F)
+    index.2 <- grepl(criteria.2, SCC$Short.Name, fix=F)
+    SCC.subset <- subset(x=SCC,subset=(index | index.2),select=c(1,3))
     
     # How have emissions from motor vehicle sources changed from 1999–2008 in Baltimore City?
     library(plyr)
